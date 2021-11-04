@@ -1,0 +1,24 @@
+---
+dependencies:
+  - role: users
+    tags: 
+      - users
+
+  - role: docker
+    tags: 
+      - docker
+
+  - role: consul
+    tags:
+      - consul
+    when: inventory_type == "prod" and cloud_provider != "gcp"
+
+  - role: consul_docker
+    tags:
+      - consul_docker
+    when: cloud_provider == "gcp"
+
+  - role: node_exporter
+    tags:
+      - node_exporter
+    when: inventory_type == "prod"

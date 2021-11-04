@@ -1,0 +1,24 @@
+---
+collections:
+
+  - name: community.general
+    version: 3.3.0
+    source: https://galaxy.ansible.com
+
+    # 'postgresql_user' module fails if username contains dot with error message
+    # "PostgreSQL does not support role with more than 1 dots".
+    # This bug was fixed in new versions of community.postgresql.
+    # https://github.com/ansible/ansible/issues/63204
+  - name: community.postgresql
+    version: 1.2.0
+    source: https://galaxy.ansible.com
+
+  - name: community.hashi_vault
+    version: 1.3.0
+    source: https://galaxy.ansible.com
+
+roles:
+
+  - name: kafka_lib
+    version: 0.13.1
+    src: https://github.com/StephenSorriaux/ansible-kafka-admin

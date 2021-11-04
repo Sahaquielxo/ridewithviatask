@@ -1,0 +1,165 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: fluentd
+  namespace: infra
+data:
+  fluent.conf: |-
+    <system>
+    workers 8
+    </system>
+
+    <match fluent.**>
+    @type null
+    </match>
+
+    <worker 0>
+    <source>
+    @type tail
+    @id in_tail_container_logs
+    path /var/log/containers/*.log
+    pos_file /var/log/fluentd-containers.log.pos
+    tag kubernetes.*
+    read_from_head true
+    <parse>
+        @type "json"
+        time_format %Y-%m-%dT%H:%M:%S.%NZ
+    </parse>
+    </source>
+    </worker>
+
+    <filter kubernetes.var.log.containers.**>
+    @type kubernetes_metadata
+    @id filter_kube_metadata
+    skip_master_url true
+    skip_namespace_metadata true
+    </filter>
+
+    <filter kubernetes.var.log.containers.**>
+    @type record_transformer
+    enable_ruby
+    <record>
+      dev ${record["kubernetes"]["namespace_name"]}
+      service ${record["kubernetes"]["container_name"]}
+      image ${record["kubernetes"]["container_image"]}
+      node ${record["kubernetes"]["host"]}
+    </record>
+    remove_keys $.kubernetes.pod_name,$.kubernetes.namespace_name,$.kubernetes.host,$.kubernetes.container_name,$.kubernetes.container_image,stream,$.kubernetes.labels.env,$.docker.container_id,$.kubernetes.container_image_id,$.kubernetes.labels.pod-template-hash,$.kubernetes.labels.app,$.kubernetes.pod_id
+    </filter>
+
+    <filter kubernetes.var.log.containers.**>
+    @type parser
+    <parse>
+      @type json
+      json_parser json
+      time_format %Y-%m-%dT%H:%M:%S
+    </parse>
+    key_name log
+    replace_invalid_sequence true
+    emit_invalid_record_to_error false
+    reserve_data true
+    </filter>
+
+    <filter kubernetes.var.log.containers.**>
+    @type parser
+    <parse>
+      @type json
+      json_parser json
+      time_format %Y-%m-%dT%H:%M:%S
+    </parse>
+    key_name message
+    replace_invalid_sequence true
+    emit_invalid_record_to_error false
+    reserve_data true
+    </filter>
+
+    <filter kubernetes.var.log.containers.**>
+    @type parser
+    <parse>
+      @type json
+      json_parser json
+      time_format %Y-%m-%dT%H:%M:%S
+    </parse>
+    key_name data
+    replace_invalid_sequence true
+    emit_invalid_record_to_error false
+    reserve_data true
+    </filter>
+
+    <match kubernetes.var.log.containers.**>
+    @type rewrite_tag_filter
+    <rule>
+      key service
+      pattern /^graphql$/
+      tag graphql.${tag}
+    </rule>
+    <rule>
+      key service
+      pattern /.+/
+      tag backend.${tag}
+    </rule>
+      request_timeout 2147483648
+    </match>
+
+    <match backend.kubernetes.var.log.containers.**>
+    @type elasticsearch
+    @id out_backend_es
+    @log_level info
+    include_tag_key true
+    hosts "{{ groups['es_logs'] | join(',') }}"
+    port "9200"
+    path ""
+    scheme "http"
+    ssl_verify "true"
+    ssl_version "TLSv1"
+    reload_connections "false"
+    reconnect_on_error "true"
+    reload_on_failure "true"
+    log_es_400_reason "false"
+    logstash_prefix backend
+    logstash_format "true"
+    type_name "fluentd"
+    request_timeout 2147483648
+    <buffer tag,time>
+          timekey               "5s"
+          timekey_wait          "1s"
+          chunk_limit_size      "32M"
+          total_limit_size      "1024M"
+          chunk_full_threshold  "0.9"
+          flush_thread_count    "16"
+          retry_timeout         "72h"
+          retry_forever         "true"
+          retry_type            "periodic"
+          retry_wait            "2s"
+    </buffer>
+    </match>
+
+    <match graphql.kubernetes.var.log.containers.**>
+    @type elasticsearch
+    @id out_graphql_es
+    @log_level info
+    include_tag_key true
+    hosts "{{ groups['es_logs'] | join(',') }}"
+    port "9200"
+    path ""
+    scheme "http"
+    ssl_verify "true"
+    ssl_version "TLSv1"
+    reload_connections "false"
+    reconnect_on_error "true"
+    reload_on_failure "true"
+    log_es_400_reason "false"
+    logstash_prefix graphql
+    logstash_format "true"
+    type_name "fluentd"
+    request_timeout 2147483648
+    <buffer>
+        flush_thread_count "8"
+        flush_interval "5s"
+        chunk_full_threshold "0.8"
+        chunk_limit_size "32M"
+        total_limit_size "1024M"
+        retry_max_interval "30"
+        retry_forever true
+    </buffer>
+    </match>

@@ -1,0 +1,12 @@
+kibana_namespace: infra
+kibana_version: "6.8.8"
+
+# Set variable 'kibana_es_type' when deploying kibana for different purposes
+# e.g. 'kibana_es_type: logs' or 'kibana_es_type: data' 
+
+kibana_name:
+  logs: kibana-logging
+  data: kibana-data
+
+kibana_deploy_name: "{{ kibana_name[kibana_es_type] }}"
+kibana_deploy_elasticsearch_url: "{{ kibana_elasticsearch_url[kibana_es_type] }}"

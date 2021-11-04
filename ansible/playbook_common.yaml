@@ -1,0 +1,13 @@
+- hosts:
+    - elasticsearch
+  serial: 1
+  roles:
+    - role: elasticsearch
+  post_tasks:
+    - name: wait for elastic to start
+      wait_for:
+        port: 9092
+        connect_timeout: 1
+        timeout: 60
+  tags:
+    - elasticsearch

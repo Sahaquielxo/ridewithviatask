@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ kibana_deploy_name }}"
+  namespace: "{{ kibana_namespace }}"
+  labels:
+    k8s-app: "{{ kibana_deploy_name }}"
+    addonmanager.kubernetes.io/mode: Reconcile
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: "{{ kibana_deploy_name }}"
+  template:
+    metadata:
+      labels:
+        k8s-app: "{{ kibana_deploy_name }}"
+      annotations:
+        seccomp.security.alpha.kubernetes.io/pod: 'docker/default'
+    spec:
+      containers:
+      - name: "{{ kibana_deploy_name }}"
+        image: docker.elastic.co/kibana/kibana:{{ kibana_version }}
+        resources:
+          limits:
+            cpu: 1000m
+          requests:
+            cpu: 100m
+        env:
+          - name: ELASTICSEARCH_URL
+            value: "{{ kibana_deploy_elasticsearch_url }}"
+        ports:
+        - containerPort: 5601
+          name: ui
+          protocol: TCP

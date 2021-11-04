@@ -1,0 +1,8 @@
+locales
+python3-venv
+python3-apt
+python3-setuptools
+openssh-client
+curl
+jq
+git

@@ -1,0 +1,12 @@
+---
+- name: Deploy fluentd
+  k8s:
+    definition: "{{ lookup('template', '{{ item }}.yml.j2') | from_yaml }}"
+    state: present
+    context: "{{ k8s_cluster_env[cluster_env] }}"
+  loop:
+    - service_account
+    - cluster_role_binding
+    - cluster_role
+    - config
+    - deployment
