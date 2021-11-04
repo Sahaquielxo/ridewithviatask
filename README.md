@@ -1,21 +1,22 @@
-## Test project for Elad and ridewithvia
+# Test project for Elad and ridewithvia
 
 ## Structure:
 
-# - charts
+### - charts
 There are 3 different charts. For Elasticsearch, Kibana and Fluent-bit. Deprecated repository https://github.com/helm/charts was used as a source.
 
-# - terraform
+### - terraform
 s3.tf allows to create a bucket in AWS S3.
 
-# - ansible
+### - ansible
 Just a bounus :) 
 I've never had a chance to prepare ELK/EFK helm charts by myself of with my team, so I supposed to work with open solutions from Github. 
 I also decided that I have to show something made by myself. That's it, from a recent project.
 
 
 
-## Kibana URL: ae4452ba2ead742d69b5af0c27a17f6f-507053054.us-west-1.elb.amazonaws.com
+## Kibana URL: 
+http://ae4452ba2ead742d69b5af0c27a17f6f-507053054.us-west-1.elb.amazonaws.com
 
 
 ## Logs in S3:
