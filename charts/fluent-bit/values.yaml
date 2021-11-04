@@ -68,6 +68,7 @@ parsers:
   json: []
 
 env:
+# MUST be hidden, just an example values
   - name: AWS_ACCESS_KEY_ID
     value: "AKIA433ULVHBGVHZIMOD"
   - name: AWS_SECRET_ACCESS_KEY

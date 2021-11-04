@@ -105,6 +105,13 @@ data:
 {{ .Values.extraEntries.filter | indent 8 }}
 
   fluent-bit-output.conf: |
+    [OUTPUT]
+        Name                         s3
+        Match                        *
+        bucket                       ridewithvia
+        region                       us-west-1
+        total_file_size              1M
+        upload_timeout               10s
 
 {{  if eq .Values.backend.type "test" }}
     [OUTPUT]
