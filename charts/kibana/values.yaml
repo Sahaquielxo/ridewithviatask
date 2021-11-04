@@ -1,0 +1,97 @@
+image:
+  repository: "docker.elastic.co/kibana/kibana-oss"
+  tag: "6.8.6"
+  pullPolicy: "IfNotPresent"
+
+commandline:
+  args: []
+
+env:
+  ELASTICSEARCH_HOSTS: "http://elastic-elasticsearch-client:9200"
+  SERVER_PORT: "5601"
+  LOGGING_VERBOSE: "true"
+  SERVER_DEFAULTROUTE: "/app/kibana"
+
+files:
+  kibana.yml:
+    server.name: kibana
+    server.host: "0"
+    elasticsearch.hosts: http://elastic-elasticsearch-client:9200
+
+deployment:
+  annotations: {}
+
+service:
+  type: ClusterIP
+  externalPort: 443
+  internalPort: 5601
+  annotations: {}
+  labels: {}
+  selector: {}
+
+ingress:
+  enabled: false
+
+livenessProbe:
+  enabled: false
+  path: /status
+  initialDelaySeconds: 30
+  timeoutSeconds: 10
+
+readinessProbe:
+  enabled: false
+  path: /status
+  initialDelaySeconds: 30
+  timeoutSeconds: 10
+  periodSeconds: 10
+  successThreshold: 5
+
+authProxyEnabled: false
+
+extraVolumeMounts: []
+
+extraVolumes: []
+
+resources: {}
+
+priorityClassName: ""
+
+tolerations: []
+
+nodeSelector: {}
+
+podAnnotations: {}
+replicaCount: 1
+revisionHistoryLimit: 3
+
+podLabels: {}
+
+dashboardImport:
+  enabled: false
+  timeout: 60
+  basePath: /
+  xpackauth:
+    enabled: false
+    username: myuser
+    password: mypass
+  dashboards: {}
+    # k8s: https://raw.githubusercontent.com/monotek/kibana-dashboards/master/k8s-fluentd-elasticsearch.json
+
+plugins:
+  enabled: false
+  reset: false
+  values:
+    # - elastalert-kibana-plugin,1.0.1,https://github.com/bitsensor/elastalert-kibana-plugin/releases/download/1.0.1/elastalert-kibana-plugin-1.0.1-6.4.2.zip
+    # - logtrail,0.1.31,https://github.com/sivasamyk/logtrail/releases/download/v0.1.31/logtrail-6.6.0-0.1.31.zip
+    # - other_plugin
+
+persistentVolumeClaim:
+  enabled: false
+  existingClaim: false
+  annotations: {}
+
+  accessModes:
+    - ReadWriteOnce
+  size: "5Gi"
+
+extraConfigMapMounts: []

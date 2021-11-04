@@ -1,4 +1,0 @@
-apiVersion: v1
-description: ridewithvia task
-name: elasticsearch-fluentbit-kibana
-version: "1.0"
