@@ -45,6 +45,17 @@ rbac.authorization.k8s.io/v1alpha1
 {{- end -}}
 
 {{/*
+Create the name of the service account to use
+*/}}
+{{- define "fluent-bit.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "fluent-bit.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Return the appropriate apiVersion for DaemonSet.
 */}}
 {{- define "daemonSet.apiVersion" -}}
