@@ -1,8 +1,8 @@
-appVersion: "6.8.6"
+appVersion: "6.8.20"
 
 image:
   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
-  tag: "6.8.6"
+  tag: "6.8.20"
   pullPolicy: "IfNotPresent"
 
 initImage:

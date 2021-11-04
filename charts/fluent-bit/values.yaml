@@ -1,7 +1,7 @@
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 1.8.9
+    tag: 1.6.10
   pullPolicy: Always
 
 nameOverride: ""
@@ -116,7 +116,7 @@ affinity: {}
 
 service:
   flush: 1
-  logLevel: trace
+  logLevel: info
 
 input:
   tail:
