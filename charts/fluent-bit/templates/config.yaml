@@ -105,14 +105,6 @@ data:
 {{ .Values.extraEntries.filter | indent 8 }}
 
   fluent-bit-output.conf: |
-    [OUTPUT]
-        Name s3
-        Match *
-        bucket ridewithvia
-        region us-west-1
-        store_dir /logs
-        total_file_size 50M
-        upload_timeout 5m
 
 {{  if eq .Values.backend.type "test" }}
     [OUTPUT]
@@ -180,6 +172,13 @@ data:
         tls.ca_file /secure/es-tls-ca.crt
 {{- end }}
 {{- end }}
+    [OUTPUT]
+        Name                         s3
+        Match                        *
+        bucket                       ridewithvia
+        region                       us-west-1
+        total_file_size              1M
+        upload_timeout               10s
 {{ else if eq .Values.backend.type "splunk" }}
     [OUTPUT]
         Name  splunk
