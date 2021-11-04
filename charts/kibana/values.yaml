@@ -22,8 +22,8 @@ deployment:
   annotations: {}
 
 service:
-  type: ClusterIP
-  externalPort: 443
+  type: LoadBalancer
+  externalPort: 80
   internalPort: 5601
   annotations: {}
   labels: {}
